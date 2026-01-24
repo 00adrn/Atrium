@@ -1,5 +1,4 @@
 import createClient from "lib/supabase/server";
-import { motion } from "motion/react"
 import HomepageContent from "./HomepageContent";
 
 const Home = async () => {

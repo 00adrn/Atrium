@@ -34,7 +34,9 @@ export default function HomepageContent(){
       <div className="absolute top-8 right-10 z-20" ref={el => homeElementsRef.current[1] = el}>
         <motion.button 
           whileHover={{ scale: 1.05 }}
-          className="bg-white text-gray-800 px-6 py-2.5 rounded-lg text-base font-medium transition-colors duration-300 hover:bg-blue-50 translate-y-1">
+          className="bg-white text-gray-800 px-6 py-2.5 rounded-lg text-base font-medium transition-colors duration-300 hover:bg-blue-50 translate-y-1 cursor-pointer"
+          onClick={() => redirect("/dashboard")}>
+          
           Dashboard
         </motion.button>
       </div>
@@ -56,7 +58,7 @@ export default function HomepageContent(){
             {/* CTA Button */}
             <motion.button 
               whileHover={{ scale: 1.05 }}
-              className="bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700" ref={el => homeElementsRef.current[4] = el}
+              className="bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 cursor-pointer" ref={el => homeElementsRef.current[4] = el}
               onClick={() => redirect('/login')}
               >
               Sign up
