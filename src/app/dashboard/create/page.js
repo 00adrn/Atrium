@@ -8,8 +8,8 @@ export default function Page() {
     const router = useRouter();
 
     const [eventName, seteventName] = useState("someeventname");
-    const [clubId, setClubId] = useState("763c22a7-80b4-4e2c-a973-b0076d2914c2");
-    const [links, setlinks] = useState("google.come|amazon.com|linkedin.com|4chan.org");
+    const clubId = useState("cabf4635-3ca8-45c3-8c06-6e2e7ef23c0d");
+    const [links, setlinks] = useState("");
 
     const createAndRedirect = async () => {
         const { res, redirectUrl } = await generateEvent();

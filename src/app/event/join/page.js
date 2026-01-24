@@ -1,32 +1,48 @@
 "use client"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
 import { useState, useEffect } from "react"
 import LinkCard from "@/components/events/LinkCard";
 
+
 export default function Page () {
     const supabase = createClient();
-
+    const router = useRouter();
     const searchParams = useSearchParams();
     const joinCode = searchParams.get("code");
 
     const [eventName, seteventName] = useState(null);
     const [links, setlinks] = useState([]);
+    const [userData, setuserData] = useState(null);
+
 
     useEffect(() => {
-        fetchEventData();
+        joinEvent();
     }, []);
 
-    const fetchEventData = async () => {
-        const { data, error } = await supabase.from("events").select().eq("join_code", joinCode).single();
+    const joinEvent = async () => {
+        const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
+        const { data: { user } } = await supabase.auth.getUser();
 
-        if (error) {
+
+        if (eventError) {
             console.log(error);
             return;
         }
 
-        seteventName(data.name);
-        setlinks(data.links.split("|"));
+        seteventName(eventData.name);
+        setlinks(eventData.links.split("|"));
+        setuserData(user);
+
+        let { data: eventJoinData, erro: eventJoinError } = await supabase.from("events_users").insert({ event_id: eventData.id, user_id: user.id, points_earned: 1 });
+        let { data: clubJoinData, error: clubJoinError } = await supabase.from("clubs_users").insert({ club_id: eventData.club_id, user_id: user.id, points: 1 });
+
+        if (eventJoinError)
+            console.log(eventJoinError)
+
+        if (clubJoinError)
+            console.log(clubJoinError)
+
     }
 
     return (
