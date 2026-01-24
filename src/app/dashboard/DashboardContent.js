@@ -13,6 +13,8 @@ export default function DashboardContent({ userName }) {
   const [hasOrgs, setHasOrgs] = useState(true)
   const [oClubs, setOClubs] = useState([])
   const [clubs, setClubs] = useState([])
+  const [membersByOClub, setMembersByOClub] = useState({})
+  const [membersByClub, setMembersByClub] = useState({})
   const supabase = createClient()
 
   useEffect(() => {
@@ -26,9 +28,8 @@ export default function DashboardContent({ userName }) {
 
   useEffect(() => {
     if (!userId) return
-    console.log(userId)
 
-    const fetchOClubs = async () => {
+    const fetchOClubs = async () => { // gets array of clubs for which you are a member
       const { data, error } = await supabase
         .from('clubs_officers')
         .select('clubs(id, club_name, club_logo)')
@@ -43,7 +44,7 @@ export default function DashboardContent({ userName }) {
       setOClubs(clubsArray)
     }
     
-    const fetchClubs = async () => {
+    const fetchClubs = async () => { // gets array of clubs for which you are an officer
       const { data, error } = await supabase
         .from('clubs_users')
         .select('clubs(id, club_name, club_logo)')
@@ -60,7 +61,45 @@ export default function DashboardContent({ userName }) {
 
     fetchOClubs()
     fetchClubs()
-  }, [userId, clubs, oClubs])
+  }, [userId])
+
+  useEffect(() => {
+    if (oClubs.length === 0) return
+  
+    const fetchMembers = async () => {
+      const results = {}
+      for (const club of oClubs) {
+        const { data, error } = await supabase.from('clubs_users').select('users(*)').eq('club_id', club.id)
+  
+        if (!error) {
+          results[club.id] = data.map(row => row.users)
+        }
+      }
+
+      setMembersByOClub(results)
+
+    }
+    fetchMembers()
+  }, [oClubs])
+  
+  useEffect(() => {
+    if (clubs.length === 0) return
+  
+    const fetchMembers = async () => {
+      const results = {}
+      for (const club of clubs) {
+        const { data, error } = await supabase.from('clubs_users').select('users(*)').eq('club_id', club.id)
+  
+        if (!error) {
+          results[club.id] = data.map(row => row.users)
+        }
+      }
+
+      setMembersByClub(results)
+
+    }
+    fetchMembers()
+  }, [oClubs])
 
   useEffect(() => {
     if (!oClubs || !clubs) return
@@ -99,25 +138,26 @@ export default function DashboardContent({ userName }) {
         ) : (
           
           <div className='flex flex-col gap-y-5'>
-            {oClubs.map((c, i) => (
-              <AdminTableEntry 
-                key={i}
+
+            {oClubs.map(c => (
+              <AdminTableEntry
+                key={c.id}
                 orgName={c.club_name}
-                orgLogo={c.club_logo} 
-                memberCount={"100"} 
-                eventCount={5} 
-                memberList={[]} 
+                orgLogo={c.club_logo}
+                memberCount={membersByOClub[c.id]?.length ?? 0}
+                memberList={membersByOClub[c.id] ?? []}
+                eventCount={5}
                 eventList={[]}
               />
             ))}
-            {clubs.map((c, i) => (
+
+            {clubs.map(c => (
               <UserTableEntry 
-                key={i}
+                key={c.i}
                 orgName={c.club_name}
                 orgLogo={c.club_logo} 
-                memberCount={"100"} 
+                memberList={membersByOClub[c.id] ?? []} 
                 eventCount={5} 
-                memberList={[]} 
                 eventList={[]}
               />
             ))}
