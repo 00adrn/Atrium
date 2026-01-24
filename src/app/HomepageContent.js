@@ -1,11 +1,12 @@
 "use client"
 
 import { motion, animate, stagger } from "motion/react"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { redirect } from 'next/navigation'
+import { createClient } from "lib/supabase/client"
 
 export default function HomepageContent(){
-
+  const [loggedIn, setLoggedIn] = useState(false)
   const homeElementsRef = useRef([])
 
   useEffect(() => {
@@ -17,6 +18,14 @@ export default function HomepageContent(){
       { y: [-20, 0], opacity: [0, 100], filter: ["blur(4px)", "blur(0px)"] },
       { delay: stagger(0.2, { startDelay: 0.1 }), duration: 0.6 }
     );
+
+    const checkIfLoggedIn = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) setLoggedIn(true)
+    }
+
+    checkIfLoggedIn()
     }, []);
 
 
@@ -58,7 +67,7 @@ export default function HomepageContent(){
             {/* CTA Button */}
             <motion.button 
               whileHover={{ scale: 1.05 }}
-              className="bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 cursor-pointer" ref={el => homeElementsRef.current[4] = el}
+              className={loggedIn ? `hidden` : `bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 cursor-pointer`} ref={el => homeElementsRef.current[4] = el}
               onClick={() => redirect('/login')}
               >
               Sign up
