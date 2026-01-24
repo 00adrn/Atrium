@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import QRCode from "qrcode"
 
 
 
@@ -17,38 +18,104 @@ export default function Page() {
     const [eventName, seteventName] = useState(null);
     const [joinCode, setjoinCode] = useState(null);
     const [joinUrl, setjoinUrl] = useState(null);
-
+    const [qrUrl, setQrUrl] = useState('');
+    const [allUsers, setAllUsers] = useState([]);
 
     useEffect(() => {
         getEvent();
     }, []);
 
+    useEffect (() => {
+       const genQr = async () => {
+        QRCode.toDataURL(joinUrl + joinCode, {
+        width: 500,
+        margin: 2,
+        color: {
+          dark: '#292524',
+          light: '#ffffff'
+        }
+      }).then(setQrUrl);
+      }
+      genQr()
+    }, [joinUrl]);
+
+   
+
     const getEvent = async () => {
-        let { data: eventData, error: eventError } = await supabase.from("events").select().eq("id", eventId).single();
+      let { data: eventData, error: eventError } = await supabase.from("events").select().eq("id", eventId).single();
 
-        const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
-        if (!user)
-            console.log("No user logged in");
+      if (!user) console.log("No user logged in");
 
-        seteventName(eventData.name);
-        setjoinCode(eventData.join_code);
-        setjoinUrl(`${window.location.origin}/event/join?code=`);
+      seteventName(eventData.name);
+      setjoinCode(eventData.join_code);
+      setjoinUrl(`${window.location.origin}/event/join?code=`);
 
-        let { data, error } = await supabase.from("events_users").insert({ event_id: eventId, user_id: user.id, points_earned: 1 });
+      let { data, error } = await supabase.from("events_users").insert({ event_id: eventId, user_id: user.id, points_earned: 1 });
+      let { data: eventUsersData, error: eventUsersDataError} = await supabase.from("events_users").select().eq("event_id", eventId)
+      setAllUsers(eventUsersData);
 
-        if (error)
-            console.log(error);
+      if (error)
+        console.log(error);
     }
 
 
 
-    return (
-        <div>
-            <h1>EventID: {eventId}</h1>
-            <h1>JoinCode: {joinCode}</h1>
-            <h1>EventName: {eventName}</h1>
-            <h1>JoinUrl: {joinUrl}{joinCode}</h1>
+   return (
+  <div className="h-screen bg-white flex p-4">
+    <div className="flex-1 flex items-center justify-center p-8">
+      <div className="w-full max-w-3xl">
+        <div className="p-8">
+          <div className="flex flex-col gap-y-10 items-center text-center">
+            <div className="flex flex-col gap-y-2">
+              <h1 className="text-5xl font-semibold text-gray-900">
+                {eventName}
+              </h1>
+              <p className="text-xl text-gray-600 mt-2">
+                {joinUrl}{joinCode}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-25">
+              {qrUrl && (
+                <img
+                  src={qrUrl}
+                  className="w-64 h-64 p-4 rounded-lg border border-gray-200"
+                  alt="Event QR Code"
+                />
+              )}
+
+              <div className="flex flex-col items-center">
+                <h1 className="text-8xl leading-none font-serif text-gray-900">
+                  {allUsers.length}
+                </h1>
+                <p className="text-lg mt-2 text-gray-600">
+                  Participants checked in
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-y-1 -translate-x-37 -translate-y-2">
+              <h2 className="text-base text-gray-600 ">
+                Join Code
+              </h2>
+              <p className="text-2xl font-semibold text-gray-900">
+                {joinCode}
+              </p>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+
+    <div className="flex-1 flex items-center justify-center">
+      <img
+        src="/plaza.jpg"
+        className="w-full h-full max-h-screen object-cover rounded-xl"
+      />
+    </div>
+  </div>
+);
+
 }

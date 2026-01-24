@@ -1,4 +1,5 @@
 import { motion } from "motion/react"
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 export default function MemberList({ members, showLinkedIn = true }) {
   return (
@@ -16,7 +17,7 @@ export default function MemberList({ members, showLinkedIn = true }) {
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Member</th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Description</th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Points</th>
-                <th className="px-6 py-3"></th>
+                <th className="px-6 py-3 w-0"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -34,13 +35,13 @@ export default function MemberList({ members, showLinkedIn = true }) {
                   <td className="px-6 py-4">
                     <span className="text-lg font-semibold text-gray-900">{member.points}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 w-0 whitespace-nowrap">
                     {showLinkedIn ? (
                       <a 
                         href={member.linkedin} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#004182] text-white px-1 py-2 rounded-lg font-medium transition-colors"
+                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
                       >
                         <i className="fab fa-linkedin"></i>
                         LinkedIn

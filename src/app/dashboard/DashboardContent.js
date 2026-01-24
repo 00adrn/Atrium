@@ -153,7 +153,7 @@ export default function DashboardContent({ userName }) {
 
             {clubs.map(c => (
               <UserTableEntry 
-                key={c.i}
+                key={c.id}
                 orgName={c.club_name}
                 orgLogo={c.club_logo} 
                 memberList={membersByOClub[c.id] ?? []} 

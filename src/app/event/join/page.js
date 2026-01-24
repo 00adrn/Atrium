@@ -3,9 +3,12 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
 import { useState, useEffect } from "react"
 import LinkCard from "@/components/events/LinkCard";
+import EventJoinScreen from "./EventJoinScreen";
+import MemberList from "@/app/dashboard/MemberList";
+import Navbar from "@/app/dashboard/Navbar";
 
 
-export default function Page () {
+export default function EventJoinedPage() {
     const supabase = createClient();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -34,7 +37,7 @@ export default function Page () {
         setlinks(eventData.links.split("|"));
         setuserData(user);
 
-        let { data: eventJoinData, erro: eventJoinError } = await supabase.from("events_users").insert({ event_id: eventData.id, user_id: user.id, points_earned: 1 });
+        let { data: eventJoinData, error: eventJoinError } = await supabase.from("events_users").insert({ event_id: eventData.id, user_id: user.id, points_earned: 1 });
         let { data: clubJoinData, error: clubJoinError } = await supabase.from("clubs_users").insert({ club_id: eventData.club_id, user_id: user.id, points: 1 });
 
         if (eventJoinError)
@@ -45,15 +48,14 @@ export default function Page () {
 
     }
 
+    // {links.map((link, i) => (
+    //   <LinkCard link={link} key={i}/>
+    // ))}
+
     return (
-        <section className="min-h-screen bg-white text-black p-12">
-            <h1>Event Name: {eventName}</h1>
-            <h1>Links</h1>
-            <div className="flex gap-4">
-                {links.map((link, i) => (
-                    <LinkCard link={link} key={i}/>
-                ))}
-            </div>
-        </section>
+        <div>
+          <Navbar/>
+          <EventJoinScreen/>
+        </div>
     );
 }
