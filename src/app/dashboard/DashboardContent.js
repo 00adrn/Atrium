@@ -1,11 +1,12 @@
 "use client"
 
-import CreateMenu from '@/components/dashboard/CreateMenu';
+import CreateOrg from '@/components/dashboard/CreateOrg';
 import { useEffect, useState } from 'react';
 import AdminTableEntry from "./AdminTableEntry"
 import UserTableEntry from './UserTableEntry';
 import { createClient } from 'lib/supabase/client';
 import { motion } from "motion/react"
+import JoinEvent from '@/components/dashboard/JoinEvent';
 
 export default function DashboardContent({ userName }) {
   
@@ -261,10 +262,8 @@ export default function DashboardContent({ userName }) {
             </motion.span>
           </motion.h1>
           <div className="flex gap-3">
-            <CreateMenu buttonText='Create Org'/>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
-              Join Event
-            </button>
+            <CreateOrg/>
+            <JoinEvent/>
           </div>
         </div>
 
