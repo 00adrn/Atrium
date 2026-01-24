@@ -2,28 +2,40 @@
 
 import { createClient } from 'lib/supabase/client'
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export default function Page() {
     const router = useRouter();
 
+    const [eventName, seteventName] = useState("someeventname");
+    const [clubId, setClubId] = useState("763c22a7-80b4-4e2c-a973-b0076d2914c2");
+    const [links, setlinks] = useState("google.come|amazon.com|linkedin.com|4chan.org");
+
     const createAndRedirect = async () => {
-        const redirectUrl = await generateEvent();
-        router.push(redirectUrl);
+        const { res, redirectUrl } = await generateEvent();
+
+        if (res)
+            router.push(redirectUrl);
     }
 
-    const generateEvent = async (clubId, eventName) => {
+    const generateEvent = async () => {
         const joinCode = generateJoinCode();
-
         const supabase = createClient();
 
-        const { data, error } = await supabase.from("events").insert({club_id: clubId, join_code: joinCode, name: eventName, type: 1})
-        .select().single();
+        let res = false;
+        let redirectUrl = "";
 
-        if (error)
-            return error;
-        const redirectUrl = `/event/host?eventId=someTestID&joinCode=${joinCode}`;
 
-        return redirectUrl;
+        const { data, error } = await supabase.from("events").insert({ club_id: clubId, join_code: joinCode, name: eventName, links: links, type: 1 }).select().single();
+
+        if (data) {
+            res = true;
+            redirectUrl = `/event/host?eventId=${data.id}`;
+        }
+        else
+            console.log(error);
+
+        return { res, redirectUrl };
     }
 
     const generateJoinCode = () => {
@@ -37,9 +49,9 @@ export default function Page() {
     }
 
     return (
-      <div>
-        
-      </div>
+        <div>
+            <button onClick={createAndRedirect}>Create Event</button>
+        </div>
     );
 }
 
