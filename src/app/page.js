@@ -7,7 +7,7 @@ const Home = async () => {
 
   if (error) {
     console.error(error)
-  } else console.log(data)
+  }
 
   return (
     <HomepageContent/>
