@@ -1,14 +1,34 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "motion/react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+import { createClient } from "lib/supabase/client"
 
 export default function LinkedInForm(){
+  const supabase = createClient()
+  const searchParams = useSearchParams()
+  const profileResponse = searchParams.get('profileResponse')
 
   const [formData, setFormData] = useState({
     linkedin: '',
     description: ''
   });
+
+  useEffect(() => {
+    console.log(profileResponse)
+  }, [])
+
+  async function signInWithLinkedIn() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'linkedin_oidc',
+      options: {
+        redirectTo: 'http://localhost:3000/auth/callback',
+        scopes: 'openid profile'
+      }
+    })
+    if (error) console.error(error)
+    console.log(data)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,6 +60,9 @@ export default function LinkedInForm(){
           {/* Form */}
           <div className="space-y-6">
             {/* LinkedIn URL Input */}
+            <button onClick={() => signInWithLinkedIn()} className="rounded-lg w-full bg-blue-600 h-8 hover:cursor-pointer">
+              LinkedIn OAuth
+            </button>
             <div>
               <label 
                 htmlFor="linkedin" 
@@ -83,13 +106,13 @@ export default function LinkedInForm(){
             </div>
 
             {/* Submit Button */}
-            <motion.button 
-              whileHover={{ scale: 1.01 }}
+            <button 
+              // whileHover={{ scale: 1.01 }}
               className="bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 w-lg"
               onClick={() => redirect('/login')}
               >
               Sign up
-            </motion.button>
+            </button>
           </div>
 
           {/* Footer Text */}
