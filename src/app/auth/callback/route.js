@@ -32,16 +32,19 @@ export async function GET(request) {
       const forwardedHost = request.headers.get('x-forwarded-host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
 
+
       // Encode the profile data as a URL parameter
+      const profileName = profileData.name;
+      const pfp = profileData.picture;
+
       const profileParam = profileData ? encodeURIComponent(JSON.stringify(profileData)) : ''
-      const redirectUrl = profileParam ? `${next}?profileResponse=${profileParam}` : next
 
       if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${redirectUrl}`)
+        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${redirectUrl}`)
+        return NextResponse.redirect(`https://${forwardedHost}${next}/login?pfp=${pfp}&name=${profileName}`)
       } else {
-        return NextResponse.redirect(`${origin}${redirectUrl}`)
+        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
       }
     }
   }

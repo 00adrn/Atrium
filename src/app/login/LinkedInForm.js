@@ -3,20 +3,27 @@
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "lib/supabase/client"
+import { useRouter } from "next/navigation"
 
-export default function LinkedInForm(){
+export default function LinkedInForm() {
   const supabase = createClient()
   const searchParams = useSearchParams()
-  const profileResponse = searchParams.get('profileResponse')
+  const router = useRouter();
+
+  const name = searchParams.get("name");
+  const pfp = searchParams.get("pfp") + "&v=" + searchParams.get("v") + "&t=" + searchParams.get("t");
+  let firstName, lastName;
+
+  if (name) {
+    firstName = name.split(" ")[0];
+    lastName = name.split(" ")[1];
+  }
+
 
   const [formData, setFormData] = useState({
     linkedin: '',
     description: ''
   });
-
-  useEffect(() => {
-    console.log(profileResponse)
-  }, [])
 
   async function signInWithLinkedIn() {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -30,10 +37,36 @@ export default function LinkedInForm(){
     console.log(data)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Handle form submission here
+
+    const { data: { user } }  = await supabase.auth.getUser();
+
+    if (!user)
+      console.log("No user")
+
+    const { data, error } = await supabase.from('users').insert({
+      id: user.id,
+      first_name: firstName,
+      last_name: lastName,
+      headshot: pfp,
+      linkedin: formData.linkedin,
+      description: formData.description
+    })
+
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Data inserted successfully:', data);
+    }
+
+    setFormData({
+      linkedin: '',
+      description: ''
+    });
+
+    router.push('/dashboard');
   };
 
   const handleChange = (e) => {
@@ -58,14 +91,14 @@ export default function LinkedInForm(){
           </div>
 
           {/* Form */}
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* LinkedIn URL Input */}
-            <button onClick={() => signInWithLinkedIn()} className="rounded-lg w-full bg-blue-600 h-8 hover:cursor-pointer">
-              LinkedIn OAuth
+            <button onClick={() => signInWithLinkedIn()} className={`bg-blue-600 rounded-lg w-full h-8 hover:cursor-pointer`}>
+              {name ? "Logged in" : "Sign in with LinkedIn"}
             </button>
             <div>
-              <label 
-                htmlFor="linkedin" 
+              <label
+                htmlFor="linkedin"
                 className="block text-sm font-medium text-gray-900 mb-2"
               >
                 LinkedIn Profile URL
@@ -84,8 +117,8 @@ export default function LinkedInForm(){
 
             {/* Description Textarea */}
             <div>
-              <label 
-                htmlFor="description" 
+              <label
+                htmlFor="description"
                 className="block text-sm font-medium text-gray-900 mb-2"
               >
                 About You
@@ -106,14 +139,14 @@ export default function LinkedInForm(){
             </div>
 
             {/* Submit Button */}
-            <button 
+            <button
               // whileHover={{ scale: 1.01 }}
               className="bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 w-lg"
-              onClick={() => redirect('/login')}
-              >
+              type="submit"
+            >
               Sign up
             </button>
-          </div>
+          </form>
 
           {/* Footer Text */}
           <p className="mt-6 text-xs text-center text-gray-500">
