@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import MemberList from "./MemberList";
 
-export default function UserTableEntry({ orgName, orgLogo, memberCount, userPoints, memberList }){
+export default function UserTableEntry({ orgName, orgLogo, userPoints, memberList }){
 
   const [showMembers, setShowMembers] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -47,7 +47,7 @@ export default function UserTableEntry({ orgName, orgLogo, memberCount, userPoin
                   <img src={orgLogo} className="w-10 h-10 rounded-lg" />
                   <div>
                     <div className="font-medium text-gray-900">{orgName}</div>
-                    <div className="text-sm text-gray-500">{memberCount} members</div>
+                    <div className="text-sm text-gray-500">{memberList.length} members</div>
                   </div>
                 </div>
               </td>

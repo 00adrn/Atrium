@@ -24,8 +24,8 @@ export default function MemberList({ members, showLinkedIn = true }) {
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img src={member.photo} className="w-10 h-10 rounded-full" />
-                      <span className="font-medium text-gray-900">{member.name}</span>
+                      <img src={member.headshot} className="w-10 h-10 rounded-full" />
+                      <span className="font-medium text-gray-900">{member.first_name} {member.last_name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 max-w-xs">

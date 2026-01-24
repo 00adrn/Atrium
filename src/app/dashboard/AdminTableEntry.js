@@ -6,7 +6,7 @@ import MemberList from "./MemberList";
 import AttendeesPopup from "./AttendeesPopup";
 import CreateEvent from "@/components/dashboard/CreateEvent";
 
-export default function AdminTableEntry({ orgName, orgLogo, memberCount, eventCount, memberList, eventList }) {
+export default function AdminTableEntry({ orgName, orgLogo, eventCount, memberList, eventList }) {
 
   const router = useRouter()
   const [showMembers, setShowMembers] = useState(false);
@@ -70,7 +70,7 @@ export default function AdminTableEntry({ orgName, orgLogo, memberCount, eventCo
                       {orgName}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {memberCount} members
+                      {memberList.length} members
                     </div>
                   </div>
                 </div>
