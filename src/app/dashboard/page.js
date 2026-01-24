@@ -9,11 +9,12 @@ const Dashboard = async () => {
   const { data, error } = await supabase.from('users').select().eq('id', user.id).single()
   if (error) console.log(error)
   const headshot = data.headshot
+  const userName = data.first_name
 
   return (
     <div className="bg-white min-h-screen">
       <Navbar headshot={headshot}/>
-      <DashboardContent/>
+      <DashboardContent userName={userName}/>
     </div>
   )
 }
