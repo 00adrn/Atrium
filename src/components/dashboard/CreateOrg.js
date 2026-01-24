@@ -15,6 +15,7 @@ const CreateOrg = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const { data: { user } } = await supabase.auth.getUser()
 
     const fileExt = orgLogo.name.split('.').pop()
     const logoPath = `${orgName.replaceAll(" ", "_")}.${fileExt}`
@@ -28,11 +29,15 @@ const CreateOrg = () => {
     const { data: urlData } = supabase.storage.from('org_logos').getPublicUrl(logoPath)
     const logoUrl = urlData.publicUrl
     
-    const { data, error } = await supabase.from('clubs').insert({ club_name: orgName, club_description: description, club_logo: logoUrl })
-    if (error) {
-      console.log(error)
-    }
+    const { data: clubData, error: clubError } = await supabase.from('clubs').insert({ club_name: orgName, club_description: description, club_logo: logoUrl }).select().single()
+    if (clubError) console.log(clubError)
 
+    const { data: c_oJoinTableData, error: c_oJoinTableError } = await supabase.from('clubs_officers').insert({ officer_id: user.id, club_id: clubData.id })
+    if (c_oJoinTableError) console.log(c_oJoinTableError)
+    
+    const { data: c_uJoinTableData, error: c_uJoinTableError } = await supabase.from('clubs_users').insert({ user_id: user.id, club_id: clubData.id })
+    if (c_uJoinTableError) console.log(c_uJoinTableError)
+  
     setSuccess(true)
     setOrgName('')
     setDescription('')

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import MemberList from "./MemberList";
 import AttendeesPopup from "./AttendeesPopup";
+import CreateEvent from "@/components/dashboard/CreateEvent";
 
 export default function AdminTableEntry({ orgName, orgLogo, memberCount, eventCount, memberList, eventList }) {
 
@@ -111,12 +112,7 @@ export default function AdminTableEntry({ orgName, orgLogo, memberCount, eventCo
               </td>
 
               <td className="px-6 py-6">
-                <button
-                  onClick={() => router.push('/dashboard/create')}
-                  className="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg font-semibold"
-                >
-                  Launch Event
-                </button>
+                <CreateEvent/>
               </td>
             </tr>
           </tbody>

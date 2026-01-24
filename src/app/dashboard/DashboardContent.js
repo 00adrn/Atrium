@@ -4,250 +4,69 @@ import CreateOrg from '@/components/dashboard/CreateOrg';
 import { useEffect, useState } from 'react';
 import AdminTableEntry from "./AdminTableEntry"
 import UserTableEntry from './UserTableEntry';
-import { createClient } from 'lib/supabase/client';
 import { motion } from "motion/react"
 import JoinEvent from '@/components/dashboard/JoinEvent';
+import { createClient } from 'lib/supabase/client';
 
 export default function DashboardContent({ userName }) {
-  
+  const [userId, setUserId] = useState(null)
   const [hasOrgs, setHasOrgs] = useState(true)
+  const [oClubs, setOClubs] = useState([])
+  const [clubs, setClubs] = useState([])
+  const supabase = createClient()
 
-  //FOR TESTING
-  const memberList = [
-  {
-    name: "John Doe",
-    photo: "https://via.placeholder.com/40",
-    description: "Computer Science @ UF, Full-stack developer and a whole bunch of crazy stuff that's way too long for this field",
-    points: 250,
-    linkedin: "https://linkedin.com/in/johndoe"
-  },
-  {
-    name: "Jane Smith",
-    photo: "https://via.placeholder.com/40",
-    description: "Software Engineering @ UF, AI enthusiast",
-    points: 180,
-    linkedin: "https://linkedin.com/in/janesmith"
-  },
-  {
-    name: "Mike Johnson",
-    photo: "https://via.placeholder.com/40",
-    description: "CS @ UF, Backend developer",
-    points: 145,
-    linkedin: "https://linkedin.com/in/mikejohnson"
-  },
-  {
-    name: "Sarah Williams",
-    photo: "https://via.placeholder.com/40",
-    description: "Computer Engineering @ UF, UI/UX designer",
-    points: 220,
-    linkedin: "https://linkedin.com/in/sarahwilliams"
-  },
-  {
-    name: "Alex Chen",
-    photo: "https://via.placeholder.com/40",
-    description: "CS @ UF, Mobile app developer",
-    points: 195,
-    linkedin: "https://linkedin.com/in/alexchen"
-  }]
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) setUserId(user.id)
+    }
 
-  const eventList = [
-  {
-    name: "Fall Kickoff Meeting",
-    date: "September 15, 2024",
-    attendance: 45,
-    attendees: [
-      {
-        name: "John Doe",
-        photo: "https://via.placeholder.com/40",
-        description: "President of the organization, oversees all operations.",
-        points: 250,
-        linkedin: "https://linkedin.com/in/johndoe"
-      },
-      {
-        name: "Jane Smith",
-        photo: "https://via.placeholder.com/40",
-        description: "Vice President, focuses on member engagement.",
-        points: 180,
-        linkedin: "https://linkedin.com/in/janesmith"
-      },
-      {
-        name: "Mike Johnson",
-        photo: "https://via.placeholder.com/40",
-        description: "Treasurer responsible for budgeting and funding.",
-        points: 145,
-        linkedin: "https://linkedin.com/in/mikejohnson"
-      },
-      {
-        name: "John Doe",
-        photo: "https://via.placeholder.com/40",
-        description: "President of the organization, oversees all operations.",
-        points: 250,
-        linkedin: "https://linkedin.com/in/johndoe"
-      },
-      {
-        name: "Jane Smith",
-        photo: "https://via.placeholder.com/40",
-        description: "Vice President, focuses on member engagement.",
-        points: 180,
-        linkedin: "https://linkedin.com/in/janesmith"
-      },
-      {
-        name: "Mike Johnson",
-        photo: "https://via.placeholder.com/40",
-        description: "Treasurer responsible for budgeting and funding.",
-        points: 145,
-        linkedin: "https://linkedin.com/in/mikejohnson"
+    fetchUserId()
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return
+    console.log(userId)
+
+    const fetchOClubs = async () => {
+      const { data, error } = await supabase
+        .from('clubs_officers')
+        .select('clubs(id, club_name, club_logo)')
+        .eq('officer_id', userId)
+    
+      if (error) {
+        console.log(error)
+        return
       }
-    ]
-  },
-  {
-    name: "Web Development Workshop",
-    date: "October 3, 2024",
-    attendance: 32,
-    attendees: [
-      {
-        name: "Sarah Williams",
-        photo: "https://via.placeholder.com/40",
-        description: "Frontend developer with a focus on React and UI design.",
-        points: 220,
-        linkedin: "https://linkedin.com/in/sarahwilliams"
-      },
-      {
-        name: "Alex Chen",
-        photo: "https://via.placeholder.com/40",
-        description: "Backend engineer interested in APIs and databases.",
-        points: 195,
-        linkedin: "https://linkedin.com/in/alexchen"
-      },
-      {
-        name: "John Doe",
-        photo: "https://via.placeholder.com/40",
-        description: "Led the workshop introduction and demos.",
-        points: 250,
-        linkedin: "https://linkedin.com/in/johndoe"
+    
+      const clubsArray = data?.map(item => item.clubs).filter(Boolean) || []
+      setOClubs(clubsArray)
+    }
+    
+    const fetchClubs = async () => {
+      const { data, error } = await supabase
+        .from('clubs_users')
+        .select('clubs(id, club_name, club_logo)')
+        .eq('user_id', userId)
+    
+      if (error) {
+        console.log(error)
+        return
       }
-    ]
-  },
-  {
-    name: "Hackathon Planning Session",
-    date: "October 20, 2024",
-    attendance: 28,
-    attendees: [
-      {
-        name: "Mike Johnson",
-        photo: "https://via.placeholder.com/40",
-        description: "Coordinated sponsorship logistics and budgeting.",
-        points: 145,
-        linkedin: "https://linkedin.com/in/mikejohnson"
-      },
-      {
-        name: "Jane Smith",
-        photo: "https://via.placeholder.com/40",
-        description: "Organized teams and scheduling for the hackathon.",
-        points: 180,
-        linkedin: "https://linkedin.com/in/janesmith"
-      },
-      {
-        name: "Alex Chen",
-        photo: "https://via.placeholder.com/40",
-        description: "Planned technical challenges and judging criteria.",
-        points: 195,
-        linkedin: "https://linkedin.com/in/alexchen"
-      }
-    ]
-  },
-  {
-    name: "Guest Speaker: Tech Industry",
-    date: "November 8, 2024",
-    attendance: 52,
-    attendees: [
-      {
-        name: "John Doe",
-        photo: "https://via.placeholder.com/40",
-        description: "Introduced guest speaker and moderated Q&A.",
-        points: 250,
-        linkedin: "https://linkedin.com/in/johndoe"
-      },
-      {
-        name: "Sarah Williams",
-        photo: "https://via.placeholder.com/40",
-        description: "Handled event marketing and promotions.",
-        points: 220,
-        linkedin: "https://linkedin.com/in/sarahwilliams"
-      },
-      {
-        name: "Mike Johnson",
-        photo: "https://via.placeholder.com/40",
-        description: "Managed venue and equipment logistics.",
-        points: 145,
-        linkedin: "https://linkedin.com/in/mikejohnson"
-      }
-    ]
-  },
-  {
-    name: "Code Review Workshop",
-    date: "November 22, 2024",
-    attendance: 38,
-    attendees: [
-      {
-        name: "Jane Smith",
-        photo: "https://via.placeholder.com/40",
-        description: "Led peer code review sessions.",
-        points: 180,
-        linkedin: "https://linkedin.com/in/janesmith"
-      },
-      {
-        name: "Alex Chen",
-        photo: "https://via.placeholder.com/40",
-        description: "Provided backend architecture feedback.",
-        points: 195,
-        linkedin: "https://linkedin.com/in/alexchen"
-      },
-      {
-        name: "Sarah Williams",
-        photo: "https://via.placeholder.com/40",
-        description: "Focused on UI/UX improvements and accessibility.",
-        points: 220,
-        linkedin: "https://linkedin.com/in/sarahwilliams"
-      }
-    ]
-  },
-  {
-    name: "Year-End Social",
-    date: "December 10, 2024",
-    attendance: 67,
-    attendees: [
-      {
-        name: "John Doe",
-        photo: "https://via.placeholder.com/40",
-        description: "Helped organize activities and awards.",
-        points: 250,
-        linkedin: "https://linkedin.com/in/johndoe"
-      },
-      {
-        name: "Jane Smith",
-        photo: "https://via.placeholder.com/40",
-        description: "Coordinated catering and member outreach.",
-        points: 180,
-        linkedin: "https://linkedin.com/in/janesmith"
-      },
-      {
-        name: "Mike Johnson",
-        photo: "https://via.placeholder.com/40",
-        description: "Handled budgeting and reimbursements.",
-        points: 145,
-        linkedin: "https://linkedin.com/in/mikejohnson"
-      },
-      {
-        name: "Sarah Williams",
-        photo: "https://via.placeholder.com/40",
-        description: "Designed event branding and visuals.",
-        points: 220,
-        linkedin: "https://linkedin.com/in/sarahwilliams"
-      }
-    ]
-  }
-  ];
+    
+      const clubsArray = data?.map(item => item.clubs).filter(Boolean) || []
+      setClubs(clubsArray)
+    }
+
+    fetchOClubs()
+    fetchClubs()
+  }, [userId, clubs, oClubs])
+
+  useEffect(() => {
+    if (!oClubs || !clubs) return
+    if (oClubs.length === 0 && clubs.length === 0) setHasOrgs(false)
+    else setHasOrgs(true)
+  }, [oClubs, clubs])
 
   return (
     <div className="min-h-screen bg-white p-12">
@@ -280,8 +99,28 @@ export default function DashboardContent({ userName }) {
         ) : (
           
           <div className='flex flex-col gap-y-5'>
-            <AdminTableEntry orgName={"Gator User Design"} orgLogo={"/tower.jpg"} memberCount={"100"} eventCount={5} memberList={memberList} eventList={eventList}/>
-            <UserTableEntry orgName={"Gator User Design"} orgLogo={"/tower.jpg"} memberCount={"100"} userPoints={5} memberList={memberList}/>
+            {oClubs.map((c, i) => (
+              <AdminTableEntry 
+                key={i}
+                orgName={c.club_name}
+                orgLogo={c.club_logo} 
+                memberCount={"100"} 
+                eventCount={5} 
+                memberList={[]} 
+                eventList={[]}
+              />
+            ))}
+            {clubs.map((c, i) => (
+              <UserTableEntry 
+                key={i}
+                orgName={c.club_name}
+                orgLogo={c.club_logo} 
+                memberCount={"100"} 
+                eventCount={5} 
+                memberList={[]} 
+                eventList={[]}
+              />
+            ))}
           </div>
         )}
       </div>
