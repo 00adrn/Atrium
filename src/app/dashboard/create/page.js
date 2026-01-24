@@ -1,32 +1,35 @@
 "use client"
 
 import { createClient } from 'lib/supabase/client'
-import { redirect } from "next/navigation" 
+import { useRouter } from "next/navigation"
 
 export default function Page() {
-    return <div>
-        <button  style={{background: "white", color: "black"}}> testbutton </button>
-    </div>
+    const router = useRouter();
+
+    const createAndRedirect = async () => {
+        const redirectUrl = await generateEvent();
+        router.push(redirectUrl);
+    }
+
+    return (
+        <div>
+            <button style={{ background: "white", color: "black" }} onClick={createAndRedirect}> testbutton </button>
+        </div>
+    );
 }
 
-const createAndRedirect = async () => {
-    const redirectUrl = await generateEvent();
-
-    redirect(redirectUrl);
-}
 
 const generateEvent = async (clubId, eventName) => {
     const joinCode = generateJoinCode();
 
     const supabase = createClient();
 
-    const { data, error } = await supabase.from("events").insert({club_id: clubId, join_code: joinCode, name: eventName})
+    const { data, error } = await supabase.from("events").insert({club_id: clubId, join_code: joinCode, name: eventName, type: 1})
     .select().single();
 
     if (error)
         return error;
-
-    const redirectUrl = `/host/event/${data.id}`;
+    const redirectUrl = `/event/host?eventId=someTestID&joinCode=${joinCode}`;
 
     return redirectUrl;
 }
