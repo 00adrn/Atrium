@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 
 const Navbar = ({ headshot }) => {
   return (
-    <nav className="bg-white border-b border-gray-200 px-4 py-2">
+    <nav className="fixed top-0 w-full bg-white border-b border-gray-200 px-4 py-2 z-10">
       <div className="flex items-center justify-between">
         <a 
         className="cursor-pointer"

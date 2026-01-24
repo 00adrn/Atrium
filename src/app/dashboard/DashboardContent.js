@@ -69,7 +69,7 @@ export default function DashboardContent({ userName }) {
   }, [oClubs, clubs])
 
   return (
-    <div className="min-h-screen bg-white p-12">
+    <div className="relative top-8 bg-white p-12">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-10">
           <motion.h1 className='text-black text-4xl font-semibold'>
