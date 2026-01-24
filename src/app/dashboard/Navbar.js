@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation"
 
-export default function Navbar() {
+const Navbar = ({ headshot }) => {
   return (
     <nav className="bg-white border-b border-gray-200 px-4 py-2">
       <div className="flex items-center justify-between">
@@ -11,7 +11,7 @@ export default function Navbar() {
         onClick={() => redirect("/")}>
         <img src="/alpha.svg" alt="Logo" className="h-7 w-7" /></a>
         <img 
-          src="/placehold.png" 
+          src={headshot} 
           alt="Profile" 
           className="h-8 w-8 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
         />
@@ -19,3 +19,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
+export default Navbar

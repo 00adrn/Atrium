@@ -1,11 +1,21 @@
 import DashboardContent from "./DashboardContent";
 import Navbar from "./Navbar";
+import createClient from "lib/supabase/server";
 
-export default function Dashboard(){
+const Dashboard = async () => {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data, error } = await supabase.from('users').select().eq('id', user.id).single()
+  if (error) console.log(error)
+  const headshot = data.headshot
+
   return (
     <div className="bg-white min-h-screen">
-      <Navbar/>
+      <Navbar headshot={headshot}/>
       <DashboardContent/>
     </div>
   )
 }
+
+export default Dashboard
