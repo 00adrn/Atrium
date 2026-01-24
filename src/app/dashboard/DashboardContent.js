@@ -1,5 +1,6 @@
 "use client"
 
+import CreateMenu from '@/components/dashboard/CreateMenu';
 import { useState } from 'react';
 
 export default function DashboardContent() {
@@ -10,9 +11,7 @@ export default function DashboardContent() {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-end mb-4">
           <div className="flex gap-3">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
-              Create Org
-            </button>
+            <CreateMenu buttonText='Create Org'/>
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
               Join Event
             </button>
