@@ -33,7 +33,7 @@ const Navbar = ({ headshot }) => {
     if (error) {
       console.log(error)
     } else {
-      redirect("/login")
+      redirect("/")
     }
   }
 

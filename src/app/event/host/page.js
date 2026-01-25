@@ -69,8 +69,6 @@ export default function Page() {
     genQr()
   }, [joinUrl]);
 
-
-
   const getEvent = async () => {
     let { data: eventData, error: eventError } = await supabase.from("events").select().eq("id", eventId).single();
     if (eventError || !eventData) {
@@ -98,11 +96,16 @@ export default function Page() {
     }
   }
 
-
-
   return (
     <div className="h-screen bg-white flex p-4">
       <div className="flex-1 flex items-center justify-center p-8">
+        <button onClick={() => {
+          if (confirm('Do you really want to close this event and return to the dashboard?')) {
+            router.push('/dashboard')
+          }
+          }} className="w-fit h-fit">
+          <img className='absolute top-5 left-5 w-8 hover:cursor-pointer' src='/alpha.svg'/>
+        </button>
         <div className="w-full max-w-3xl">
           <div className="p-8">
             <div className="flex flex-col gap-y-10 items-center text-center">
@@ -148,7 +151,7 @@ export default function Page() {
 
       <div className="flex-1 flex items-center justify-center">
         <img
-          src="/plaza.jpg"
+          src="/uf_coe.jpg"
           className="w-full h-full max-h-screen object-cover rounded-xl"
         />
       </div>
