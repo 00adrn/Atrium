@@ -111,13 +111,15 @@ export default function AttendeesPopup({ isOpen, onClose, attendees }) {
                         </td>
 
                         <td className="px-6 py-4">
-                          <button
-                            onClick={() => alert("Add points")}
+                          <a
+                            href={member.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
                           >
-                            <i className="fas fa-plus"></i>
-                            Add Points
-                          </button>
+                            <i className="fab fa-linkedin"></i>
+                            LinkedIn
+                          </a>
                         </td>
                       </tr>
                     ))}

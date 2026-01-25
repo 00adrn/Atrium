@@ -210,7 +210,7 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
                 >
                   <MemberList
                     members={memberData}
-                    showLinkedIn={false}
+                    showLinkedIn={true}
                   />
                 </motion.div>
               </td>
