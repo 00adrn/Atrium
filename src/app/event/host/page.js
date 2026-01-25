@@ -20,10 +20,40 @@ export default function Page() {
   const [joinUrl, setjoinUrl] = useState(null);
   const [qrUrl, setQrUrl] = useState('');
   const [allUsers, setAllUsers] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     getEvent();
   }, []);
+
+  useEffect(() => {
+    if (!joinCode || !user) return;
+
+    const room = `event-${joinCode}`;
+    const channel = supabase.channel(room, {
+      config: {
+        presence: {
+          key: user.id,
+        },
+      },
+    });
+
+    channel
+      .on("presence", { event: "sync" }, () => {
+        const presenceState = channel.presenceState();
+        const userIds = Object.keys(presenceState);
+        setAllUsers(userIds);
+      })
+      .subscribe(async (status) => {
+        if (status === "SUBSCRIBED") {
+          await channel.track({});
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [joinCode, user]);
 
   useEffect(() => {
     const genQr = async () => {
@@ -57,17 +87,15 @@ export default function Page() {
       return;
     }
 
+    setUser(user);
     seteventName(eventData.name);
     setjoinCode(eventData.join_code);
     setjoinUrl(`${window.location.origin}/event/join?code=`);
 
     const { error: insertError } = await supabase.from("events_users").insert({ event_id: eventId, user_id: user.id, points_earned: 1 });
-    if (insertError && insertError.code !== '23505') { // Ignore unique constraint violations on refresh
+    if (insertError && insertError.code !== '23505') {
       console.error('Error adding host to event:', insertError);
     }
-    let { data: eventUsersData, error: eventUsersDataError } = await supabase.from("events_users").select().eq("event_id", eventId)
-    if (eventUsersData) setAllUsers(eventUsersData);
-    if (eventUsersDataError) console.error('Error fetching event users:', eventUsersDataError);
   }
 
 
