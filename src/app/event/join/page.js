@@ -70,6 +70,16 @@ export default function EventJoinedPage() {
         }
 
         seteventName(eventData.name);
+
+        const rawLinkData = eventData.links.split("&&");
+        let linkData = [];
+
+        for (let i = 0; i < rawLinkData.length; i++) {
+            linkData.push([rawLinkData[i].split("|")[0], rawLinkData[i].split("|")[1]]);
+        }
+
+        setlinks(linkData);
+
         if (eventData.links) setlinks(eventData.links.split("|"));
         setuserData(user);
 
@@ -85,7 +95,7 @@ export default function EventJoinedPage() {
     return (
         <div>
             <Navbar />
-            <EventJoinScreen eventName={eventName} />
+            <EventJoinScreen eventName={eventName} users={allUsers} />
         </div>
     );
 }
