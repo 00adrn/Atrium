@@ -120,7 +120,6 @@ export default function Page() {
                   <img
                     src={qrUrl}
                     className="w-64 h-64 p-4 rounded-lg border border-gray-200"
-                    alt="Event QR Code"
                   />
                 )}
 

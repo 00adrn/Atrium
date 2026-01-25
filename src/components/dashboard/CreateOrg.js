@@ -85,7 +85,7 @@ const CreateOrg = () => {
               </button>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <h2 className="text-2xl text-black font-semibold mb-2">Create an org</h2>
+                <h2 className="text-2xl text-black font-semibold mb-2">Create an organization</h2>
                 <AnimatePresence>
                   <motion.div
                     initial={{ opacity: 0.9 }}

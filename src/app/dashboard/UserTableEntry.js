@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import MemberList from "./MemberList";
 
-export default function UserTableEntry({ clubId, orgName, orgLogo, userPoints, memberList }) {
+export default function UserTableEntry({ orgName, orgLogo, userPoints, memberList }) {
   const [showMembers, setShowMembers] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
@@ -24,7 +24,7 @@ export default function UserTableEntry({ clubId, orgName, orgLogo, userPoints, m
   return (
     <>
       <tbody className="divide-y divide-gray-200">
-        <tr className="hover:bg-gray-50">
+        <tr className="hover:bg-gray-50 transition-colors duration-200">
           <td className="px-6 py-4">
             <div className="flex items-center gap-3">
               <img src={orgLogo} className="w-10 h-10 rounded-lg" />

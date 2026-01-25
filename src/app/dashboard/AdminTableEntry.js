@@ -34,12 +34,11 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
   return (
     <>
       <tbody className="divide-y divide-gray-200">
-        <tr className="hover:bg-gray-50">
+        <tr>
           <td className="px-6 py-6">
             <div className="flex items-center gap-4">
               <img
                 src={orgLogo}
-                alt={orgName}
                 className="w-16 h-16 rounded-lg"
               />
               <div>
@@ -124,30 +123,41 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
                         </thead>
 
                         <tbody className="divide-y divide-gray-200">
-                          {eventList?.map((event, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 font-medium text-gray-900">
-                                {event.name}
-                              </td>
+                          {eventList?.map((event, index) => {
+                            const timestamp = event.created_at
+                            const date = new Date(timestamp)
+                          
+                            const formatted = date.toLocaleDateString('en-US', {
+                              month: '2-digit',
+                              day: '2-digit',
+                              year: '2-digit'
+                            })
 
-                              <td className="px-6 py-4 text-sm text-gray-600">
-                                {event.date}
-                              </td>
+                            return (
+                              <tr key={event.id} className="">
+                                <td className="px-6 py-4 font-medium text-gray-900">
+                                  {event.name}
+                                </td>
 
-                              <td className="px-6 py-4 text-lg font-semibold text-gray-900">
-                                {event.attendance}
-                              </td>
+                                <td className="px-6 py-4 text-sm text-gray-600">
+                                  {formatted}
+                                </td>
 
-                              <td className="px-6 py-4">
-                                <button
-                                  onClick={() => setActiveEvent(event)}
-                                  className="text-blue-600 hover:text-blue-700 font-semibold"
-                                >
-                                  Show Attendees
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
+                                <td className="px-6 py-4 text-lg font-semibold text-gray-900">
+                                  {event.attendance}
+                                </td>
+
+                                <td className="px-6 py-4">
+                                  <button
+                                    onClick={() => setActiveEvent(event)}
+                                    className="text-blue-600 hover:text-blue-700 font-semibold"
+                                  >
+                                    Show Attendees
+                                  </button>
+                                </td>
+                              </tr>
+                            )
+                          })}
                         </tbody>
                       </table>
                     </div>
