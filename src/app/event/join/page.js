@@ -2,11 +2,8 @@
 import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
 import { useState, useEffect } from "react"
-import LinkCard from "@/components/events/LinkCard";
 import EventJoinScreen from "./EventJoinScreen";
-import MemberList from "@/app/dashboard/MemberList";
 import Navbar from "@/app/dashboard/Navbar";
-
 
 export default function EventJoinedPage() {
     const supabase = createClient();
@@ -18,6 +15,7 @@ export default function EventJoinedPage() {
     const [links, setlinks] = useState([]);
     const [userData, setuserData] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
+    const [headshot, setheadshot] = useState(null)
 
 
     useEffect(() => {
@@ -55,6 +53,9 @@ export default function EventJoinedPage() {
     }, [joinCode, userData]);
 
     const joinEvent = async () => {
+
+        
+
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
             console.error(userError || "No user logged in");
@@ -68,6 +69,9 @@ export default function EventJoinedPage() {
             router.push('/dashboard');
             return;
         }
+        
+        const { data, error } = await supabase.from('users').select().eq('id', user.id).single()
+        setheadshot(data.headshot)
 
         seteventName(eventData.name);
 
@@ -94,8 +98,8 @@ export default function EventJoinedPage() {
 
     return (
         <div>
-            <Navbar />
-            <EventJoinScreen eventName={eventName} users={allUsers} />
+            <Navbar headshot={headshot}/>
+            <EventJoinScreen eventName={eventName} users={allUsers} resources={links}/>
         </div>
     );
 }
