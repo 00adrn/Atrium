@@ -15,6 +15,7 @@ export default function DashboardContent({ userName }) {
   const [clubs, setClubs] = useState([])
   const [membersByOClub, setMembersByOClub] = useState({})
   const [membersByClub, setMembersByClub] = useState({})
+  const [eventsByOClub, setEventsByOClub] = useState({})
   const supabase = createClient()
 
   useEffect(() => {
@@ -66,6 +67,32 @@ export default function DashboardContent({ userName }) {
   useEffect(() => {
     if (oClubs.length === 0) return
   
+    const fetchEventsWithAttendees = async () => {
+      const results = {}
+      
+      for (const club of oClubs) {
+        const { data: events, error: eventsError } = await supabase.from('events').select('*').eq('club_id', club.id).order('created_at', { ascending: false })
+        if (eventsError || !events) continue
+  
+        const eventsWithAttendees = await Promise.all(
+          events.map(async (event) => {
+            const { data: attendeesData, error: attendeesError } = await supabase.from('events_users').select('users(*)').eq('event_id', event.id)
+            const attendees = attendeesData?.map(row => row.users).filter(Boolean) || []
+  
+            return {
+              ...event,
+              attendees,
+              attendance: attendees.length
+            }
+          })
+        )
+  
+        results[club.id] = eventsWithAttendees
+      }
+      
+      setEventsByOClub(results)
+    }
+
     const fetchMembers = async () => {
       const results = {}
       for (const club of oClubs) {
@@ -79,6 +106,8 @@ export default function DashboardContent({ userName }) {
       setMembersByOClub(results)
 
     }
+
+    fetchEventsWithAttendees()
     fetchMembers()
   }, [oClubs])
   
@@ -136,14 +165,12 @@ export default function DashboardContent({ userName }) {
             </div>
           </div>
         ) : (
-          
           <div className='flex flex-col gap-y-5'>
-
             {oClubs.length > 0 && (
               <>
                 <div className="mb-2">
                   <h2 className="text-2xl text-gray-900">
-                    Manage your organization(s)
+                    Manage your organization(s):
                   </h2>
                 </div>
 
@@ -163,7 +190,7 @@ export default function DashboardContent({ userName }) {
                         <th className="px-6 py-3 w-1/5"></th>
                       </tr>
                     </thead>
-                    {oClubs.map( (c, i)=> (
+                    {oClubs.map((c, i)=> (
                       <AdminTableEntry
                         key={i}
                         clubId={c.id}
@@ -171,8 +198,8 @@ export default function DashboardContent({ userName }) {
                         orgLogo={c.club_logo}
                         memberCount={membersByOClub[c.id]?.length ?? 0}
                         memberList={membersByOClub[c.id] ?? []}
-                        eventCount={5}
-                        eventList={[]}
+                        eventCount={eventsByOClub[c.id]?.length ?? 0}
+                        eventList={eventsByOClub[c.id] ?? []}
                       />
                     ))}
                   </table>
@@ -184,7 +211,7 @@ export default function DashboardContent({ userName }) {
               <>
                 <div className="mb-2">
                   <h2 className="text-2xl text-gray-900">
-                    View orgs you're a member of
+                    View orgs you're a member of:
                   </h2>
                 </div>
 
@@ -205,8 +232,6 @@ export default function DashboardContent({ userName }) {
                         orgName={c.club_name}
                         orgLogo={c.club_logo} 
                         memberList={membersByClub[c.id] ?? []}
-                        eventCount={5} 
-                        eventList={[]}
                       />
                     ))}
                   </table>
