@@ -2,11 +2,11 @@
 
 import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect } from "react"
 import EventJoinScreen from "./EventJoinScreen";
 import Navbar from "@/app/dashboard/Navbar";
 
-function EventJoinedContent() {
+export default function EventJoinedPage() {
     const supabase = createClient();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -66,7 +66,7 @@ function EventJoinedContent() {
             return;
         }
 
-        const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
+         const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
         if (eventError || !eventData) {
             console.error(eventError || `Event not found for code: ${joinCode}`);
             router.push('/dashboard');
@@ -103,13 +103,5 @@ function EventJoinedContent() {
             <Navbar headshot={headshot} />
             <EventJoinScreen eventName={eventName} users={allUsers} resources={links} />
         </div>
-    );
-}
-
-export default function EventJoinedPage() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <EventJoinedContent />
-        </Suspense>
     );
 }
