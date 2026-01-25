@@ -27,8 +27,8 @@ const Navbar = ({ headshot }) => {
     
     getUserData()
   }, [])
-
-  const handleClick = async () => {
+  
+  const handleClickSO = async () => {
     const { error } = await supabase.auth.signOut()
     if (error) {
       console.log(error)
@@ -54,7 +54,7 @@ const Navbar = ({ headshot }) => {
         <AnimatePresence initial={false} mode="wait">
           {pfpMenuOpen && 
               <motion.div 
-                className="absolute top-11 right-4 w-48 h-fit p-2 bg-white rounded-lg border border-gray-200 shadow-md flex flex-col gap-4"
+                className="absolute top-11 right-4 w-48 h-fit p-2 bg-white rounded-lg border border-gray-200 shadow-md flex flex-col gap-2"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1.0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -64,7 +64,10 @@ const Navbar = ({ headshot }) => {
                   <p className="text-black">{userName}</p>
                   <p className="text-gray-500">{userDesc}</p>
                 </div>
-                <button onClick={() => handleClick()} className='w-full text-black hover:cursor-pointer mt-auto h-8 rounded-sm bg-red-500/20 hover:bg-red-500/40 transition-colors duration-200'>
+                <button onClick={() => redirect('/dashboard')} className="w-full text-black hover:cursor-pointer mt-auto h-8 rounded-sm bg-blue-600/20 hover:bg-blue-700/40 transition-colors duration-200">
+                  Dashboard
+                </button>
+                <button onClick={() => handleClickSO()} className='w-full text-black hover:cursor-pointer mt-auto h-8 rounded-sm bg-red-500/20 hover:bg-red-500/40 transition-colors duration-200'>
                   Sign out
                 </button>
               </motion.div>
