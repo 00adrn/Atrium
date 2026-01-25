@@ -189,7 +189,7 @@ export default function CreateEvent({ clubId }) {
                 </AnimatePresence>
 
                 <button
-                  type="submit" // This is implicitly handled by the form's onSubmit
+                  type="submit"
                   className='bg-blue-600 hover:bg-blue-700 hover:cursor-pointer w-full h-10 rounded-lg flex items-center justify-center text-white transition duration-200 mt-2'
                 >
                   Submit

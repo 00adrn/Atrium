@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import MemberList from "./MemberList";
 
-export default function UserTableEntry({ orgName, orgLogo, userPoints, memberList }) {
+export default function UserTableEntry({ clubId, orgName, orgLogo, userPoints, memberList }) {
   const [showMembers, setShowMembers] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
