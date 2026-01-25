@@ -9,13 +9,14 @@ export default function EventJoinedPage() {
     const supabase = createClient();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const joinCode = searchParams.get("code");
 
     const [eventName, seteventName] = useState(null);
     const [links, setlinks] = useState([]);
     const [userData, setuserData] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
     const [headshot, setheadshot] = useState(null)
+    const [joinCode, setJoinCode] = useState(null);
+
 
 
     useEffect(() => {
@@ -23,6 +24,7 @@ export default function EventJoinedPage() {
     }, []);
 
     useEffect(() => {
+        setJoinCode(searchParams.get("code"));
         if (!joinCode || !userData) return;
 
         const room = `event-${joinCode}`;
