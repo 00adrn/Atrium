@@ -42,7 +42,7 @@ export async function GET(request) {
       if (isLocalEnv) {
         return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}/login?pfp=${pfp}&name=${profileName}`)
+        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
       } else {
         return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
       }
