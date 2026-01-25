@@ -2,6 +2,8 @@ import { motion } from "motion/react"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 export default function MemberList({ members, showLinkedIn = true }) {
+
+
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}

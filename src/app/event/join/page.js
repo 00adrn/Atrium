@@ -54,7 +54,7 @@ export default function EventJoinedPage() {
 
     const joinEvent = async () => {
 
-        
+
 
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
@@ -69,7 +69,7 @@ export default function EventJoinedPage() {
             router.push('/dashboard');
             return;
         }
-        
+
         const { data, error } = await supabase.from('users').select().eq('id', user.id).single()
         setheadshot(data.headshot)
 
@@ -84,7 +84,6 @@ export default function EventJoinedPage() {
 
         setlinks(linkData);
 
-        if (eventData.links) setlinks(eventData.links.split("|"));
         setuserData(user);
 
         const { error: eventJoinError } = await supabase.from("events_users").insert({ event_id: eventData.id, user_id: user.id, points_earned: 1 });
@@ -98,8 +97,8 @@ export default function EventJoinedPage() {
 
     return (
         <div>
-            <Navbar headshot={headshot}/>
-            <EventJoinScreen eventName={eventName} users={allUsers} resources={links}/>
+            <Navbar headshot={headshot} />
+            <EventJoinScreen eventName={eventName} users={allUsers} resources={links} />
         </div>
     );
 }
