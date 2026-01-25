@@ -1,19 +1,15 @@
-
 "use client"
 import { useSearchParams } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import QRCode from "qrcode"
 
-
-
-export default function Page() {
+function HostPageContent() {
   const supabase = createClient();
   const searchParams = useSearchParams();
   const eventId = searchParams.get("eventId");
   const router = useRouter();
-
 
   const [eventName, seteventName] = useState(null);
   const [joinCode, setjoinCode] = useState(null);
@@ -157,5 +153,12 @@ export default function Page() {
       </div>
     </div>
   );
+}
 
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="h-screen bg-white flex items-center justify-center">Loading...</div>}>
+      <HostPageContent />
+    </Suspense>
+  );
 }

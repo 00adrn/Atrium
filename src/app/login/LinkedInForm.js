@@ -1,14 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-
-export default function LinkedInForm() {
+function LinkedInFormContent() {
   const supabase = createClient()
   const searchParams = useSearchParams()
   const router = useRouter();
@@ -157,5 +156,13 @@ export default function LinkedInForm() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LinkedInForm() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>}>
+      <LinkedInFormContent />
+    </Suspense>
   );
 }

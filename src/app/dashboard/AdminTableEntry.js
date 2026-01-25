@@ -116,7 +116,7 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
           </td>
 
           <td className="px-6 py-6">
-            <CreateEvent/>
+            <CreateEvent clubId={clubId}/>
           </td>
         </tr>
       </tbody>
