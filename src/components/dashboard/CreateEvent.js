@@ -11,7 +11,7 @@ export default function CreateEvent({ clubId }) {
 
   const [formOpen, setFormOpen] = useState(false)
   const [eventName, setEventName] = useState("");
-  const [pointCount, setPointCount] = useState(0);
+  const [pointCount, setPointCount] = useState(null);
   const [links, setlinks] = useState([["", ""]]);
 
   const generateJoinCode = () => {
@@ -151,8 +151,8 @@ export default function CreateEvent({ clubId }) {
                       <input
                         type="number"
                         value={pointCount}
-                        onChange={(e) => setPointCount(Number(e.target.value))}
                         placeholder="10"
+                        onChange={(e) => setPointCount(Number(e.target.value))}
                         className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none placeholder-gray-400"
                       />
                     </div>

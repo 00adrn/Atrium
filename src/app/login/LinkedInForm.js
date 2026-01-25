@@ -30,7 +30,7 @@ function LinkedInFormContent() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'linkedin_oidc',
       options: {
-        redirectTo: 'http://localhost:3000/auth/callback',
+        redirectTo: `${window.location.origin}/callback/auth`,
         scopes: 'openid profile'
       }
     })

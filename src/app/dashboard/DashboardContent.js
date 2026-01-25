@@ -16,6 +16,7 @@ export default function DashboardContent({ userName }) {
   const [membersByOClub, setMembersByOClub] = useState({})
   const [membersByClub, setMembersByClub] = useState({})
   const [eventsByOClub, setEventsByOClub] = useState({})
+  const [userPointsByClub, setUserPointsByClub] = useState({})
   const supabase = createClient()
 
   useEffect(() => {
@@ -112,7 +113,7 @@ export default function DashboardContent({ userName }) {
   }, [oClubs])
   
   useEffect(() => {
-    if (clubs.length === 0) return
+    if (clubs.length === 0 || !userId) return
   
     const fetchMembers = async () => {
       const results = {}
@@ -124,13 +125,30 @@ export default function DashboardContent({ userName }) {
         }
       }
 
-      console.log(results);
-
       setMembersByClub(results)
-
     }
+
+    const fetchUserPoints = async () => {
+      const results = {}
+      for (const club of clubs) {
+        const { data, error } = await supabase
+          .from('clubs_users')
+          .select('points')
+          .eq('club_id', club.id)
+          .eq('user_id', userId)
+          .single()
+
+        if (!error && data) {
+          results[club.id] = data.points ?? 0
+        }
+      }
+
+      setUserPointsByClub(results)
+    }
+
     fetchMembers()
-  }, [clubs])
+    fetchUserPoints()
+  }, [clubs, userId])
 
   useEffect(() => {
     if (!oClubs || !clubs) return
@@ -231,6 +249,7 @@ export default function DashboardContent({ userName }) {
                       <UserTableEntry 
                         key={i}
                         clubId={c.id}
+                        userPoints={userPointsByClub[c.id] ?? 0}
                         orgName={c.club_name}
                         orgLogo={c.club_logo} 
                         memberList={membersByClub[c.id] ?? []}

@@ -79,7 +79,7 @@ function EventJoinedPageContent() {
 
         const rawLinkData = eventData.links.split("&&");
         let linkData = [];
-
+ 
         for (let i = 0; i < rawLinkData.length; i++) {
             linkData.push([rawLinkData[i].split("|")[0], rawLinkData[i].split("|")[1]]);
         }

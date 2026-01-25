@@ -2,11 +2,42 @@ import { motion, AnimatePresence } from "motion/react"
 import { useState, useRef, useEffect } from "react"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import MemberList from "./MemberList";
+import { createClient } from 'lib/supabase/client';
 
 export default function UserTableEntry({ clubId, orgName, orgLogo, userPoints, memberList }) {
+  const supabase = createClient();
   const [showMembers, setShowMembers] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [memberData, setMemberData] = useState(memberList);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!memberList || memberList.length === 0 || !clubId) {
+      setMemberData([]);
+      return;
+    }
+
+    const addMemberPoints = async () => {
+      const updatedMembers = await Promise.all(
+        memberList.map(async (member) => {
+          const { data: pointsData, error } = await supabase.from("clubs_users").select("points").eq("user_id", member.id).eq("club_id", clubId).single();
+          
+          if (error) {
+            console.error("Error fetching points for member:", member.id, error);
+            return { ...member, points: 0 };
+          }
+          
+          return {
+            ...member,
+            points: pointsData?.points ?? 0
+          };
+        })
+      );
+      setMemberData(updatedMembers);
+    };
+    
+    addMemberPoints();
+  }, [memberList, clubId]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -36,7 +67,7 @@ export default function UserTableEntry({ clubId, orgName, orgLogo, userPoints, m
           </td>
 
           <td className="px-6 py-4">
-            <span className="text-2xl font-semibold text-blue-600">{userPoints}</span>
+            <span className="text-xl font-semibold text-black">{userPoints}</span>
           </td>
 
           <td className="px-6 py-4">
@@ -84,7 +115,7 @@ export default function UserTableEntry({ clubId, orgName, orgLogo, userPoints, m
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <MemberList members={memberList} clubId={clubId} showLinkedIn={true}/>
+                  <MemberList members={memberData} showLinkedIn={true} showPoints={false}/>
                 </motion.div>
               </td>
             </tr>

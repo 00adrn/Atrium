@@ -1,7 +1,7 @@
 import { motion } from "motion/react"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-export default function MemberList({ members, showLinkedIn = true }) {
+export default function MemberList({ members, showLinkedIn = true, showPoints = false }) {
 
   return (
     <motion.div
@@ -17,7 +17,9 @@ export default function MemberList({ members, showLinkedIn = true }) {
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Member</th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Description</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Points</th>
+                {showPoints && (
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Points</th>
+                )}
                 <th className="px-6 py-3 w-0"></th>
               </tr>
             </thead>
@@ -33,9 +35,11 @@ export default function MemberList({ members, showLinkedIn = true }) {
                   <td className="px-6 py-4 max-w-xs">
                     <span className="text-sm text-gray-600">{member.description}</span>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="text-lg font-semibold text-gray-900">{member.points}</span>
-                  </td>
+                  {showPoints && (
+                    <td className="px-6 py-4">
+                      <span className="text-lg font-semibold text-gray-900">{member.points}</span>
+                    </td>
+                  )}
                   <td className="px-6 py-4 w-0 whitespace-nowrap">
                     {showLinkedIn ? (
                       <a 
