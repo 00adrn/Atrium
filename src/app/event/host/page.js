@@ -11,10 +11,10 @@ import QRCode from "qrcode"
 export default function Page() {
   const supabase = createClient();
   const searchParams = useSearchParams();
-  const eventId = searchParams.get("eventId");
   const router = useRouter();
 
 
+  const [eventId, setEventId] = useState(null);
   const [eventName, seteventName] = useState(null);
   const [joinCode, setjoinCode] = useState(null);
   const [joinUrl, setjoinUrl] = useState(null);
@@ -27,6 +27,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
+    eventId = searchParams.get("eventId");
+    
     if (!joinCode || !user) return;
 
     const room = `event-${joinCode}`;
