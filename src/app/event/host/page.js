@@ -27,7 +27,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    eventId = searchParams.get("eventId");
+    setEventId(searchParams.get("eventId"));
     
     if (!joinCode || !user) return;
 
