@@ -50,9 +50,9 @@ export default function HomepageContent(){
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 -translate-y-12">
         <div className="flex flex-col items-center justify-center">
-          <div className="text-center max-w-4xl">
-            <h1 className="text-8xl font-serif text-white mb-4 tracking-tight leading-none" ref={el => homeElementsRef.current[2] = el}>
-              Event Management<br />made simple.
+          <div className="text-center max-w-6xl">
+            <h1 className="text-[86px] font-serif text-white mb-4 tracking-tight leading-none " ref={el => homeElementsRef.current[2] = el}>
+              Building campus community <br/> one event at a time.
             </h1>
             
             <p className="text-xl text-white/95 mb-6 max-w-3xl mx-auto leading-relaxed" ref={el => homeElementsRef.current[3] = el}>
@@ -61,10 +61,10 @@ export default function HomepageContent(){
             
             <motion.button 
               whileHover={{ scale: 1.05 }}
-              className={loggedIn ? `hidden` : `bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 cursor-pointer`} ref={el => homeElementsRef.current[4] = el}
+              className={loggedIn ? `hidden` : `bg-blue-600 text-white px-6 py-3 mt-6 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 cursor-pointer`} ref={el => homeElementsRef.current[4] = el}
               onClick={() => redirect('/login')}
               >
-              Sign up
+              Login / Sign up
             </motion.button>
           </div>
         </div>
