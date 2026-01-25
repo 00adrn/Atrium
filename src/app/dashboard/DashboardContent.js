@@ -99,7 +99,7 @@ export default function DashboardContent({ userName }) {
 
     }
     fetchMembers()
-  }, [oClubs])
+  }, [clubs])
 
   useEffect(() => {
     if (!oClubs || !clubs) return
@@ -156,7 +156,7 @@ export default function DashboardContent({ userName }) {
                 key={c.id}
                 orgName={c.club_name}
                 orgLogo={c.club_logo} 
-                memberList={membersByOClub[c.id] ?? []} 
+                memberList={membersByClub[c.id] ?? []}
                 eventCount={5} 
                 eventList={[]}
               />
