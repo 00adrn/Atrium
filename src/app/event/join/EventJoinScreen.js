@@ -1,4 +1,6 @@
 "use client"
+
+import dynamic from "next/dynamic"
 import { motion } from "motion/react"
 import MemberList from '@/app/dashboard/MemberList';
 import ResourceTableButton from "@/components/events/ResourceButton";

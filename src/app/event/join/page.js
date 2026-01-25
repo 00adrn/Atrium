@@ -1,11 +1,12 @@
 "use client"
+
 import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import EventJoinScreen from "./EventJoinScreen";
 import Navbar from "@/app/dashboard/Navbar";
 
-export default function EventJoinedPage() {
+function EventJoinedContent() {
     const supabase = createClient();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -102,5 +103,13 @@ export default function EventJoinedPage() {
             <Navbar headshot={headshot} />
             <EventJoinScreen eventName={eventName} users={allUsers} resources={links} />
         </div>
+    );
+}
+
+export default function EventJoinedPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <EventJoinedContent />
+        </Suspense>
     );
 }
