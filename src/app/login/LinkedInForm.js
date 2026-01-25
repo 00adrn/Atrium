@@ -30,7 +30,7 @@ function LinkedInFormContent() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'linkedin_oidc',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `https://atrium-8w7n.vercel.app/auth/callback`,
         scopes: 'openid profile'
       }
     })
