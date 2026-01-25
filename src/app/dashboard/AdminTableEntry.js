@@ -15,30 +15,38 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
   const [showEvents, setShowEvents] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [activeEvent, setActiveEvent] = useState(null);
-  const [memberData, setMemberData] = useState();
+  const [memberData, setMemberData] = useState(memberList);
 
   const menuRef = useRef(null);
   const eventsRef = useRef(null);
   const membersRef = useRef(null);
 
   useEffect(() => {
-    
+    if (!memberList || memberList.length === 0 || !clubId) {
+      setMemberData([]); 
+      return;
+    }
+
     const addMemberPoints = async () => {
       const updatedMembers = await Promise.all(
-      memberList.map(async (member) => {
-        const { data: pointsData } = await supabase.from("clubs_users").select("points").eq("user_id", member.id).eq("club_id", clubId).single();
-        return {
-          ...member,
-          points: pointsData?.points ?? 0
-        };
-      })
-    );
-
-    setMemberData(updatedMembers);
-  };
-
+        memberList.map(async (member) => {
+          const { data: pointsData, error } = await supabase.from("clubs_users").select("points").eq("user_id", member.id).eq("club_id", clubId).single();
+          if (error) {
+            console.error("Error fetching points for member:", member.id, error);
+            return { ...member, points: 0 };
+          }
+          return {
+            ...member,
+            points: pointsData?.points ?? 0
+          };
+        })
+      );
+      setMemberData(updatedMembers);
+    };
     addMemberPoints();
+  }, [memberList, clubId]);
 
+  useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setShowMenu(false);
@@ -49,7 +57,7 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, []); 
 
   return (
     <>
@@ -201,7 +209,7 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
                   transition={{ duration: 0.3 }}
                 >
                   <MemberList
-                    members={memberList}
+                    members={memberData}
                     showLinkedIn={false}
                   />
                 </motion.div>
