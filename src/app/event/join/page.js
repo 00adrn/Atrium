@@ -16,6 +16,7 @@ export default function EventJoinedPage() {
     const [userData, setuserData] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
     const [headshot, setheadshot] = useState(null)
+    const [clubId, setClubId] = useState(null)
 
 
     useEffect(() => {
@@ -74,6 +75,7 @@ export default function EventJoinedPage() {
         setheadshot(data.headshot)
 
         seteventName(eventData.name);
+        setClubId(eventData.club_id);
 
         const rawLinkData = eventData.links.split("&&");
         let linkData = [];
@@ -105,7 +107,7 @@ export default function EventJoinedPage() {
     return (
         <div>
             <Navbar headshot={headshot} />
-            <EventJoinScreen eventName={eventName} users={allUsers} resources={links} />
+            <EventJoinScreen eventName={eventName} users={allUsers} resources={links} clubId={clubId}/>
         </div>
     );
 }

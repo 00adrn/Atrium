@@ -5,20 +5,40 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import MemberList from "./MemberList";
 import AttendeesPopup from "./AttendeesPopup";
 import CreateEvent from "@/components/dashboard/CreateEvent";
+import { createClient } from 'lib/supabase/client';
 
 export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, memberList, eventList }) {
 
   const router = useRouter()
+  const supabase = createClient();
   const [showMembers, setShowMembers] = useState(false);
   const [showEvents, setShowEvents] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [activeEvent, setActiveEvent] = useState(null);
+  const [memberData, setMemberData] = useState();
 
   const menuRef = useRef(null);
   const eventsRef = useRef(null);
   const membersRef = useRef(null);
 
   useEffect(() => {
+    
+    const addMemberPoints = async () => {
+      const updatedMembers = await Promise.all(
+      memberList.map(async (member) => {
+        const { data: pointsData } = await supabase.from("clubs_users").select("points").eq("user_id", member.id).eq("club_id", clubId).single();
+        return {
+          ...member,
+          points: pointsData?.points ?? 0
+        };
+      })
+    );
+
+    setMemberData(updatedMembers);
+  };
+
+    addMemberPoints();
+
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setShowMenu(false);
@@ -88,7 +108,7 @@ export default function AdminTableEntry({ clubId, orgName, orgLogo, eventCount, 
           </td>
 
           <td className="px-6 py-6">
-            <CreateEvent clubId={clubId}/>
+            <CreateEvent/>
           </td>
         </tr>
       </tbody>

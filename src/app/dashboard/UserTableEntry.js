@@ -84,7 +84,7 @@ export default function UserTableEntry({ orgName, orgLogo, userPoints, memberLis
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <MemberList members={memberList} showLinkedIn={true}/>
+                  <MemberList members={memberList} clubId={clubId} showLinkedIn={true}/>
                 </motion.div>
               </td>
             </tr>

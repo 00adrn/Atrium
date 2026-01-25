@@ -8,7 +8,7 @@ import { createClient } from 'lib/supabase/client'
 
 const supabase = createClient()
 
-export default function EventJoinScreen({ eventName, users, resources }) {
+export default function EventJoinScreen({ eventName, users, resources, clubId }) {
   const [memberData, setMemberData] = useState([]);
 
   useEffect(() => { 
@@ -17,9 +17,13 @@ export default function EventJoinScreen({ eventName, users, resources }) {
     const fetchAndAddMember = async (id) => {
       const { data: userData, error: userError } = await supabase.from('users').select().eq('id', id).single();
       if (userError) {
-        console.error(`Error fetching user ${id}:`, userError);
+        console.log(`Error fetching user ${id}:`, userError);
         return;
       }
+
+      const { data: pointData } = await supabase.from("clubs_users").select("points").eq("user_id", id).eq("club_id", clubId).single()
+      userData.points = pointData.points;
+      
 
       setMemberData(prevMemberData => {
         if (prevMemberData.some(member => member.id === userData.id)) {
@@ -47,7 +51,7 @@ export default function EventJoinScreen({ eventName, users, resources }) {
         <div className="max-w-[95%] translate-x-6">
           <ResourceTableButton resources={resources} />
         </div>
-        <MemberList members={memberData} showLinkedIn={true} />
+        <MemberList members={memberData} clubId={clubId} showLinkedIn={true} />
       </div>
     </div>
   );
