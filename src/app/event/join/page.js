@@ -24,38 +24,35 @@ export default function EventJoinedPage() {
     }, []);
 
     const joinEvent = async () => {
-        const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
-        const { data: { user } } = await supabase.auth.getUser();
+      const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
+      const { data: { user } } = await supabase.auth.getUser();
 
 
-        if (eventError) {
-            console.log(error);
-            return;
-        }
+      if (eventError) console.log(error);
 
-        seteventName(eventData.name);
-        setlinks(eventData.links.split("|"));
-        setuserData(user);
+      seteventName(eventData.name);
+      setlinks(eventData.links.split("|"));
+      setuserData(user);
 
-        let { data: eventJoinData, error: eventJoinError } = await supabase.from("events_users").insert({ event_id: eventData.id, user_id: user.id, points_earned: 1 });
-        let { data: clubJoinData, error: clubJoinError } = await supabase.from("clubs_users").insert({ club_id: eventData.club_id, user_id: user.id, points: 1 });
+      let { data: eventJoinData, error: eventJoinError } = await supabase.from("events_users").insert({ event_id: eventData.id, user_id: user.id, points_earned: 1 });
+      let { data: clubJoinData, error: clubJoinError } = await supabase.from("clubs_users").insert({ club_id: eventData.club_id, user_id: user.id, points: 1 });
 
-        if (eventJoinError)
-            console.log(eventJoinError)
+      if (eventJoinError)
+          console.log(eventJoinError)
 
-        if (clubJoinError)
-            console.log(clubJoinError)
+      if (clubJoinError)
+          console.log(clubJoinError)
 
-    }
+  }
 
-    // {links.map((link, i) => (
-    //   <LinkCard link={link} key={i}/>
-    // ))}
+  // {links.map((link, i) => (
+  //   <LinkCard link={link} key={i}/>
+  // ))}
 
-    return (
-        <div>
-          <Navbar/>
-          <EventJoinScreen/>
-        </div>
-    );
+  return (
+      <div>
+        <Navbar/>
+        <EventJoinScreen/>
+      </div>
+  );
 }

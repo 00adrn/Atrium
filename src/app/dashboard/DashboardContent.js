@@ -139,30 +139,78 @@ export default function DashboardContent({ userName }) {
           
           <div className='flex flex-col gap-y-5'>
 
-            {oClubs.map((c, i) => (
-              <AdminTableEntry
-                key={i}
-                clubId={c.id}
-                orgName={c.club_name}
-                orgLogo={c.club_logo}
-                memberCount={membersByOClub[c.id]?.length ?? 0}
-                memberList={membersByOClub[c.id] ?? []}
-                eventCount={5}
-                eventList={[]}
-              />
-            ))}
+            {oClubs.length > 0 && (
+              <>
+                <div className="mb-2">
+                  <h2 className="text-2xl text-gray-900">
+                    Manage your organization(s)
+                  </h2>
+                </div>
 
-            {clubs.map((c, i) => (
-              <UserTableEntry 
-                key={i}
-                clubId={c.id}
-                orgName={c.club_name}
-                orgLogo={c.club_logo} 
-                memberList={membersByClub[c.id] ?? []}
-                eventCount={5} 
-                eventList={[]}
-              />
-            ))}
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-2">
+                  <table className="w-full table-fixed">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 w-2/5">
+                          Organization
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 w-1/5">
+                          Event Count
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 w-1/5">
+                          Membership Info
+                        </th>
+                        <th className="px-6 py-3 w-1/5"></th>
+                      </tr>
+                    </thead>
+                    {oClubs.map(c => (
+                      <AdminTableEntry
+                        key={c.id}
+                        orgName={c.club_name}
+                        orgLogo={c.club_logo}
+                        memberCount={membersByOClub[c.id]?.length ?? 0}
+                        memberList={membersByOClub[c.id] ?? []}
+                        eventCount={5}
+                        eventList={[]}
+                      />
+                    ))}
+                  </table>
+                </div>
+              </>
+            )}
+
+            {clubs.length > 0 && (
+              <>
+                <div className="mb-2">
+                  <h2 className="text-2xl text-gray-900">
+                    View orgs you're a member of
+                  </h2>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-2">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Organization</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Your Points</th>
+                        <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">Membership Info</th>
+                        <th className="px-6 py-3"></th>
+                      </tr>
+                    </thead>
+                    {clubs.map(c => (
+                      <UserTableEntry 
+                        key={c.id}
+                        orgName={c.club_name}
+                        orgLogo={c.club_logo} 
+                        memberList={membersByClub[c.id] ?? []}
+                        eventCount={5} 
+                        eventList={[]}
+                      />
+                    ))}
+                  </table>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
