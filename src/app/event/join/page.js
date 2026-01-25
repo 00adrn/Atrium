@@ -1,5 +1,4 @@
 "use client"
-
 import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from 'lib/supabase/client'
 import { useState, useEffect } from "react"
@@ -10,14 +9,13 @@ export default function EventJoinedPage() {
     const supabase = createClient();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const joinCode = searchParams.get("code");
 
     const [eventName, seteventName] = useState(null);
     const [links, setlinks] = useState([]);
     const [userData, setuserData] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
     const [headshot, setheadshot] = useState(null)
-    const [joinCode, setJoinCode] = useState(null);
-
 
 
     useEffect(() => {
@@ -25,7 +23,6 @@ export default function EventJoinedPage() {
     }, []);
 
     useEffect(() => {
-        setJoinCode(searchParams.get("code"));
         if (!joinCode || !userData) return;
 
         const room = `event-${joinCode}`;
@@ -66,7 +63,7 @@ export default function EventJoinedPage() {
             return;
         }
 
-         const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
+        const { data: eventData, error: eventError } = await supabase.from("events").select().eq("join_code", joinCode).single();
         if (eventError || !eventData) {
             console.error(eventError || `Event not found for code: ${joinCode}`);
             router.push('/dashboard');
