@@ -6,12 +6,11 @@ import { useState } from "react"
 import { AnimatePresence, motion } from 'motion/react'
 import { CgClose } from 'react-icons/cg'
 
-export default function CreateEvent({}) {
+export default function CreateEvent({ clubId }) {
   const router = useRouter();
 
   const [formOpen, setFormOpen] = useState(false)
   const [eventName, setEventName] = useState("");
-  const clubId = "4ee76c5f-10b0-4b32-a408-836af0db8a01";
   const [links, setlinks] = useState([["", ""]]);
 
   const generateJoinCode = () => {
@@ -24,7 +23,8 @@ export default function CreateEvent({}) {
     return id;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     const createAndRedirect = async () => {
       const { res, redirectUrl } = await generateEvent();
@@ -53,7 +53,7 @@ export default function CreateEvent({}) {
 
       if (data) {
         res = true;
-        redirectUrl = `/event/host?eventId=${data.id}`;
+        redirectUrl = `${window.location.origin}/event/host?eventId=${data.id}`;
       }
       else
         console.log(error);
@@ -189,7 +189,7 @@ export default function CreateEvent({}) {
                 </AnimatePresence>
 
                 <button
-                  type="submit"
+                  type="submit" // This is implicitly handled by the form's onSubmit
                   className='bg-blue-600 hover:bg-blue-700 hover:cursor-pointer w-full h-10 rounded-lg flex items-center justify-center text-white transition duration-200 mt-2'
                 >
                   Submit

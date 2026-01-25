@@ -8,13 +8,13 @@ import { motion } from "framer-motion"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 
-export default function LinkedInForm(){
+export default function LinkedInForm() {
   const supabase = createClient()
   const searchParams = useSearchParams()
   const router = useRouter();
 
   const name = searchParams.get("name");
-  const pfp = searchParams.get("pfp") + "&v=" + searchParams.get("v") + "&t="+ searchParams.get("t");
+  const pfp = searchParams.get("pfp") + "&v=" + searchParams.get("v") + "&t=" + searchParams.get("t");
   let firstName, lastName;
 
   if (name) {
@@ -43,7 +43,7 @@ export default function LinkedInForm(){
     e.preventDefault();
     console.log('Form submitted:', formData);
 
-    const { data: { user } }  = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user)
       console.log("No user")
@@ -80,8 +80,8 @@ export default function LinkedInForm(){
   return (
     <div className="min-h-screen bg-white flex p-4">
       <div className="flex-1 hidden lg:flex items-center justify-center">
-        <img 
-          src="/tower.jpg" 
+        <img
+          src="/tower.jpg"
           className="w-full h-full object-cover"
           style={{ borderRadius: '9px' }}
         />
@@ -92,8 +92,8 @@ export default function LinkedInForm(){
           <div className="p-8">
             <a onClick={() => router.push("/")} className="cursor-pointer">
               <div className="flex gap-x-6 mb-8">
-                  <img className="w-15 h-15 translate-y-1" src="/logo_bg.jpg"/>
-                  <div className="mb-8">
+                <img className="w-15 h-15 translate-y-1" src="/logo_bg.jpg" />
+                <div className="mb-8">
                   <p className="font-serif text-7xl text-black">
                     Atrium
                   </p>
@@ -108,8 +108,8 @@ export default function LinkedInForm(){
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label 
-                  htmlFor="linkedin" 
+                <label
+                  htmlFor="linkedin"
                   className="block text-sm font-medium text-gray-900 mb-2"
                 >
                   LinkedIn Profile URL
@@ -127,8 +127,8 @@ export default function LinkedInForm(){
               </div>
 
               <div>
-                <label 
-                  htmlFor="description" 
+                <label
+                  htmlFor="description"
                   className="block text-sm font-medium text-gray-900 mb-2"
                 >
                   Description
@@ -145,11 +145,11 @@ export default function LinkedInForm(){
                 />
               </div>
 
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.01 }}
                 className="bg-blue-600 text-white px-10 py-3 rounded-xl text-lg font-medium transition-colors duration-300 hover:bg-blue-700 w-lg mb-5"
                 type="submit"
-                >
+              >
                 Sign up
               </motion.button>
             </form>

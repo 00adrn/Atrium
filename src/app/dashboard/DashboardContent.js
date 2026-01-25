@@ -139,9 +139,10 @@ export default function DashboardContent({ userName }) {
           
           <div className='flex flex-col gap-y-5'>
 
-            {oClubs.map(c => (
+            {oClubs.map((c, i) => (
               <AdminTableEntry
-                key={c.id}
+                key={i}
+                clubId={c.id}
                 orgName={c.club_name}
                 orgLogo={c.club_logo}
                 memberCount={membersByOClub[c.id]?.length ?? 0}
@@ -151,9 +152,10 @@ export default function DashboardContent({ userName }) {
               />
             ))}
 
-            {clubs.map(c => (
+            {clubs.map((c, i) => (
               <UserTableEntry 
-                key={c.id}
+                key={i}
+                clubId={c.id}
                 orgName={c.club_name}
                 orgLogo={c.club_logo} 
                 memberList={membersByClub[c.id] ?? []}
