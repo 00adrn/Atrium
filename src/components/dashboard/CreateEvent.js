@@ -11,6 +11,7 @@ export default function CreateEvent({ clubId }) {
 
   const [formOpen, setFormOpen] = useState(false)
   const [eventName, setEventName] = useState("");
+  const [pointCount, setPointCount] = useState(0);
   const [links, setlinks] = useState([["", ""]]);
 
   const generateJoinCode = () => {
@@ -49,7 +50,7 @@ export default function CreateEvent({ clubId }) {
           linkString += "&&"
       }
 
-      const { data, error } = await supabase.from("events").insert({ club_id: clubId, join_code: joinCode, name: eventName, links: linkString, type: 1 }).select().single();
+      const { data, error } = await supabase.from("events").insert({ club_id: clubId, join_code: joinCode, name: eventName, points: pointCount, links: linkString, type: 1 }).select().single();
 
       if (data) {
         res = true;
@@ -137,6 +138,21 @@ export default function CreateEvent({ clubId }) {
                         value={eventName}
                         onChange={(e) => setEventName(e.target.value)}
                         placeholder="GBM #1"
+                        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none placeholder-gray-400"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="eventName"
+                        className="block text-sm font-medium text-gray-900 mb-2"
+                      >
+                        Points per user
+                      </label>
+                      <input
+                        type="number"
+                        value={pointCount}
+                        onChange={(e) => setPointCount(Number(e.target.value))}
+                        placeholder="10"
                         className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none placeholder-gray-400"
                       />
                     </div>

@@ -124,6 +124,8 @@ export default function DashboardContent({ userName }) {
         }
       }
 
+      console.log(results);
+
       setMembersByClub(results)
 
     }
