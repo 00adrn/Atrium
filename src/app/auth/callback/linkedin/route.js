@@ -32,22 +32,38 @@ export async function GET(request) {
       const forwardedHost = request.headers.get('x-forwarded-host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
 
+      // Check if user already exists in the users table
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: existingUser } = await supabase.from('users').select().eq('id', user.id).single()
+      
+      if (existingUser) {
+        // User exists, redirect to dashboard
+        if (isLocalEnv) {
+          return NextResponse.redirect(`${origin}/dashboard`)
+        } else if (forwardedHost) {
+          return NextResponse.redirect(`https://${forwardedHost}/dashboard`)
+        } else {
+          return NextResponse.redirect(`${origin}/dashboard`)
+        }
+      }
 
       // Encode the profile data as a URL parameter
       const profileName = profileData.name;
-      const pfp = profileData.picture;
+      const pfp = profileData.picture || '/Avatar.png';
 
       const profileParam = profileData ? encodeURIComponent(JSON.stringify(profileData)) : ''
 
       if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
+        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}&provider=linkedin`)
       } else if (forwardedHost) {
-        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
+        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}&provider=linkedin`)
       } else {
-        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}`)
+        return NextResponse.redirect(`${origin}${next}/login?pfp=${pfp}&name=${profileName}&provider=linkedin`)
       }
     }
   }
 
   return NextResponse.redirect(`${origin}/auth/auth-code-error`)
 }
+
+
