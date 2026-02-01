@@ -5,12 +5,7 @@ import createClient from 'lib/supabase/server'
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // if "next" is in param, use it as the redirect URL
-  let next = searchParams.get('next') ?? '/'
-  if (!next.startsWith('/')) {
-    // if "next" is not a relative URL, use the default
-    next = '/'
-  }
+  
 
   if (code) {
     const supabase = await createClient()
@@ -42,11 +37,11 @@ export async function GET(request) {
       const pfp = user?.user_metadata?.avatar_url || '/Avatar.png'
       
       if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}/login?name=${encodeURIComponent(profileName)}&pfp=${encodeURIComponent(pfp)}&provider=google`)
+        return NextResponse.redirect(`${origin}/login?name=${encodeURIComponent(profileName)}&pfp=${encodeURIComponent(pfp)}&provider=google`)
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}/login?name=${encodeURIComponent(profileName)}&pfp=${encodeURIComponent(pfp)}&provider=google`)
+        return NextResponse.redirect(`https://${forwardedHost}/login?name=${encodeURIComponent(profileName)}&pfp=${encodeURIComponent(pfp)}&provider=google`)
       } else {
-        return NextResponse.redirect(`${origin}${next}/login?name=${encodeURIComponent(profileName)}&pfp=${encodeURIComponent(pfp)}&provider=google`)
+        return NextResponse.redirect(`${origin}/login?name=${encodeURIComponent(profileName)}&pfp=${encodeURIComponent(pfp)}&provider=google`)
       }
     }
   }

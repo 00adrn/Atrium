@@ -48,6 +48,7 @@ const Navbar = ({ headshot }) => {
           <img
             src={headshot} 
             className="h-8 w-8 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
+            referrerPolicy="no-referrer"
           />
         </button>
 
