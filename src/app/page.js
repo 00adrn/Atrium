@@ -1,7 +1,5 @@
 import createClient from "lib/supabase/server";
 import HomepageContent from "./HomepageContent";
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/react"
 
 const Home = async () => {
   const supabase = await createClient()
@@ -12,11 +10,7 @@ const Home = async () => {
   }
 
   return (
-    <>
-      <HomepageContent/>
-      <Analytics/>
-      <SpeedInsights />
-    </>
+    <HomepageContent/>
   );
 }
 

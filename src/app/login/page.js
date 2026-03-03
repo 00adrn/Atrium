@@ -1,9 +1,9 @@
-import LoginForm from "./LoginForm";
+import LinkedInForm from "./LinkedInForm";
 
 export default function Login() {
   return (
     <div>
-      <LoginForm/>
+      <LinkedInForm/>
     </div>
   )
 }

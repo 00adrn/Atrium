@@ -7,29 +7,20 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-function LoginFormContent() {
+function LinkedInFormContent() {
   const supabase = createClient()
   const searchParams = useSearchParams()
   const router = useRouter();
 
-  const provider = searchParams.get("provider");
   const name = searchParams.get("name");
-
-  // Regular profile picture URL, will work for Google and any no pfp case. If LinkedIn user with a profile pic, needs "v" and "t" params.
-  const pfpBase = searchParams.get("pfp");
-  
-  let pfp = pfpBase;
-  if (provider === 'linkedin' && pfpBase !== '/Avatar.png') {
-    pfp = pfpBase + "&v=" + searchParams.get("v") + "&t=" + searchParams.get("t");
-  }
-  
+  const pfp = searchParams.get("pfp") + "&v=" + searchParams.get("v") + "&t=" + searchParams.get("t");
   let firstName, lastName;
 
   if (name) {
     firstName = name.split(" ")[0];
     lastName = name.split(" ")[1];
   }
-  
+
   const [formData, setFormData] = useState({
     linkedin: '',
     description: ''
@@ -39,24 +30,13 @@ function LoginFormContent() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'linkedin_oidc',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback/linkedin`,
+        redirectTo: `https://atrium.ink/auth/callback`,
         scopes: 'openid profile'
       }
     })
     if (error) console.log(error)
     console.log(data)
   }
-
-  async function signInWithGoogle() {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback/google`,
-      },
-    })
-    if (error) console.log(error)
-    console.log(data)
-  }   
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +47,7 @@ function LoginFormContent() {
     if (!user)
       console.log("No user")
 
-    const { data, error } = await supabase.from('users').upsert({
+    const { data, error } = await supabase.from('users').insert({
       id: user.id,
       first_name: firstName,
       last_name: lastName,
@@ -119,16 +99,10 @@ function LoginFormContent() {
                 </div>
               </div>
             </a>
-            
-            {/*Buttons will only appear when relevant, when returning back to form after SSO, other buttons disappear.*/}
-            <button className="flex w-full items-center justify-center gap-3 bg-[#0A66C2] hover:bg-[#004182] text-white px-6 py-3 rounded-xl font-medium transition-colors mb-6 -mt-1" onClick={() => signInWithLinkedIn()} style={{display: name && provider !== 'linkedin' ? 'none' : 'flex'}}>
-              <i className={name && provider === 'linkedin' ? "hidden" : `fab fa-linkedin text-xl`}></i>
-              {name && provider === 'linkedin' ? 'Logged in ✓' : 'Sign in with LinkedIn'}
-            </button>
 
-            <button className="flex w-full items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium transition-colors mb-6 -mt-1" onClick={() => signInWithGoogle()} style={{display: name && provider !== 'google' ? 'none' : 'flex'}}>
-              <i className={name && provider === 'google' ? "hidden" : `fab fa-google text-xl`}></i>
-              {name && provider === 'google' ? 'Logged in ✓' : 'Sign in with Google'}
+            <button className="flex w-full items-center justify-center gap-3 bg-[#0A66C2] hover:bg-[#004182] text-white px-6 py-3 rounded-xl font-medium transition-colors mb-6 -mt-1" onClick={() => signInWithLinkedIn()}>
+              <i className={name ? "hidden" : `fab fa-linkedin text-xl`}></i>
+              {name ? 'Logged in ✓' : 'Sign in with LinkedIn'}
             </button>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -185,10 +159,10 @@ function LoginFormContent() {
   );
 }
 
-export default function LoginForm() {
+export default function LinkedInForm() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>}>
-      <LoginFormContent />
+      <LinkedInFormContent />
     </Suspense>
   );
 }
